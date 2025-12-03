@@ -46,10 +46,10 @@ jobs:
       - name: Generate Windows project with Projucer
         shell: cmd
         run: |
-          third_party\JUCE\extras\Projucer\Builds\VisualStudio2022\x64\Release\App\Projucer.exe --resave AudioPlugin.jucer || (
+          third_party\JUCE\extras\Projucer\Builds\VisualStudio2022\x64\Release\App\Projucer.exe --resave AudioPlugin.jucer --fix-missing-dependencies || (
             echo "Building Projucer first..."
             msbuild "third_party\JUCE\extras\Projucer\Builds\VisualStudio2022\Projucer.sln" /p:Configuration=Release /p:Platform=x64 /m
-            third_party\JUCE\extras\Projucer\Builds\VisualStudio2022\x64\Release\App\Projucer.exe --resave AudioPlugin.jucer
+            third_party\JUCE\extras\Projucer\Builds\VisualStudio2022\x64\Release\App\Projucer.exe --resave AudioPlugin.jucer --fix-missing-dependencies
           )
 
       - name: Build with MSBuild
@@ -106,7 +106,7 @@ jobs:
 
       - name: Generate Xcode project
         run: |
-          "third_party/JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer" --resave "AudioPlugin.jucer"
+          "third_party/JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer" --resave "AudioPlugin.jucer" --fix-missing-dependencies
 
       - name: Build VST3 with xcodebuild
         run: |
@@ -185,7 +185,7 @@ jobs:
 
       - name: Generate Linux project
         run: |
-          third_party/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer --resave AudioPlugin.jucer
+          third_party/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer --resave AudioPlugin.jucer --fix-missing-dependencies
 
       - name: Build with Make
         run: |
@@ -227,13 +227,13 @@ jobs:
           python-version: '3.11'
 
       - name: Install Python dependencies
-        run: pip install -r tests/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Download pluginval
         run: |
           curl -L -o pluginval.zip https://github.com/Tracktion/pluginval/releases/latest/download/pluginval_macOS.zip
           unzip pluginval.zip -d /usr/local/bin
-          chmod +x /usr/local/bin/pluginval
+          chmod +x /usr/local/bin/pluginval.app/Contents/MacOS/pluginval
 
       - name: Build C++ unit tests
         run: |
